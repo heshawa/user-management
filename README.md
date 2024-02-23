@@ -10,15 +10,21 @@ This is a Spring Boot application for managing users through a RESTful API serve
 
 ## Dependencies
 
-The project utilizes the following dependencies:
+The project utilizes the following dependencies along with their versions:
 
-- Spring Web
-- Spring Data JPA
-- Spring Security
-- H2 Database
-- Lombok
-- ModelMapper
-- jjwt (JSON Web Token)
+- Gradle (version 4.10)
+- Spring Boot (version 2.2.0.RELEASE)
+- Spring Boot Starter Data JPA (version 2.2.0.RELEASE)
+- Spring Boot Starter Security (version 2.2.0.RELEASE)
+- Spring Boot Starter Web (version 2.2.0.RELEASE)
+- ModelMapper (version 2.3.8)
+- JSON Web Token API (jjwt-api) (version 0.11.2)
+- JSON Web Token Implementation (jjwt-impl) (version 0.11.2)
+- JSON Web Token Jackson (jjwt-jackson) (version 0.11.2)
+- H2 Database (version 1.4.200)
+- Lombok (version 1.18.10)
+- Spring Boot Starter Test (version 2.2.0.RELEASE)
+- Spring Security Test (version 5.2.0.RELEASE)
 
 ## Update property File
 
