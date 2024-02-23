@@ -190,7 +190,7 @@ public class UserServiceImpl implements UserService {
                 return userResponse;
             }
             List<User> users = userDAO.findUserByEmailAddress(user.getEmailAddress());
-            if(!CollectionUtils.isEmpty(users)){
+            if(!CollectionUtils.isEmpty(users) && !user.getUsername().equals(users.get(0).getUserId())){
                 userResponse.setMessage("User already existing");
                 return userResponse;
             }

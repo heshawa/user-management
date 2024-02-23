@@ -135,9 +135,9 @@ public class UserServiceImplTest {
     @BeforeEach
     void setUp() {
         // Create dummy users
-        Object[] user1 = new Object[]{"user1", "user1@acterio.com", "user1", "User"};
-        Object[] user2 = new Object[]{"user2", "user2@acterio.com", "user2", "User"};
-        Object[] user3 = new Object[]{"user3", "user3@gmail.com", "user3", "User"};
+        Object[] user1 = new Object[]{"user1", "user1@acterio.com", "userA", "User"};
+        Object[] user2 = new Object[]{"user2", "user2@acterio.com", "userB", "User"};
+        Object[] user3 = new Object[]{"user3", "user3@gmail.com", "userC", "User"};
 
         List<Object[]> dummyUsers = Arrays.asList(user1, user2, user3);
 
