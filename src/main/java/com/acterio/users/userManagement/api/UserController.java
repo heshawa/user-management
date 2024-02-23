@@ -54,44 +54,22 @@ public class UserController {
 
     @DeleteMapping("/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
-        CommonResponse<String> response = new CommonResponse<>();
-        try {
-            UserDTO user = userService.getUser(username);
-            if (user != null) {
-                userService.deleteUser(username);
-                response.setMessage("User " + username + " deleted successfully");
-                response.setSuccess(true);
-                return ResponseEntity.ok(response);
-            } else {
-                response.setMessage("User " + username + " not found");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-            }
-        } catch (Exception e) {
-            response.setMessage("Failed to delete user " + username);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        CommonResponse<String> response = userService.deleteUser(username);
+        if(response.isSuccess()){
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUser(@PathVariable String userId){
-        CommonResponse<UserDTO> userResponse = new CommonResponse();
-        UserDTO user = null;
-        try {
-            user = userService.getUser(userId);
-            if(user==null){
-                userResponse.setMessage("User not found.");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(userResponse);
-            }
-        } catch (Exception e) {
-            log.error("Error while finding the user.",e);
-            userResponse.setMessage("User not found");
+        CommonResponse userResponse = userService.getUser(userId);
+        if(userResponse.isSuccess()){
+            return ResponseEntity.ok(userResponse);
+        }else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(userResponse);
         }
-        if(user != null){
-            userResponse.setSuccess(true);
-            userResponse.setObject(user);
-        }
-        return ResponseEntity.ok(userResponse);
     }
     
     @GetMapping("/domain")
@@ -131,10 +109,10 @@ public class UserController {
     private ResponseEntity<?> saveOrUpdateUser(CreateUserRequestDTO user,ActionType action){
         CommonResponse<UserDTO> userResponse = new CommonResponse();
         try {
-            if(ActionType.CREATE.equals(action) && userService.getUser(user.getUsername()) != null){
+            if(ActionType.CREATE.equals(action) && userService.getUser(user.getUsername()).isSuccess()){
                 userResponse.setMessage("User "+user.getUsername()+" is already existing");
                 return ResponseEntity.ok(userResponse);
-            }else if(ActionType.UPDATE.equals(action) && userService.getUser(user.getUsername()) == null){
+            }else if(ActionType.UPDATE.equals(action) && !userService.getUser(user.getUsername()).isSuccess()){
                 userResponse.setMessage("User "+user.getUsername()+" is not found");
                 return ResponseEntity.ok(userResponse);
             }
