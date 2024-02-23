@@ -17,9 +17,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import com.acterio.users.userManagement.api.UserController;
 import com.acterio.users.userManagement.api.response.CommonResponse;
 import com.acterio.users.userManagement.dto.CreateUserRequestDTO;
 import com.acterio.users.userManagement.dto.LoginRequestDTO;
@@ -39,7 +41,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ActerioAuthenticationProvider authenticator;
     private final JwtUtil jwtUtil;
-
 
     @Autowired
     public UserServiceImpl(UserDAO userDAO, ModelMapper modelMapper, LocalValidatorFactoryBean validator, PasswordEncoder passwordEncoder, ActerioAuthenticationProvider authenticator, JwtUtil jwtUtil) {
@@ -162,5 +163,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> getAllUsers() {
         return null;
+    }
+
+    public CommonResponse saveOrUpdateUser(CreateUserRequestDTO user, ActionType action){
+        CommonResponse<UserDTO> userResponse = new CommonResponse();
+        try {
+            if(ActionType.CREATE.equals(action) && getUser(user.getUsername()).isSuccess()){
+                userResponse.setMessage("User "+user.getUsername()+" is already existing");
+                return userResponse;
+            }else if(ActionType.UPDATE.equals(action) && !getUser(user.getUsername()).isSuccess()){
+                userResponse.setMessage("User "+user.getUsername()+" is not found");
+                return userResponse;
+            }
+            List<User> users = userDAO.findUserByEmailAddress(user.getEmailAddress());
+            if(!CollectionUtils.isEmpty(users)){
+                userResponse.setMessage("User already existing");
+                return userResponse;
+            }
+            userResponse.setObject(addUser(user));
+            userResponse.setSuccess(true);
+        } catch (Exception e) {
+            userResponse.setMessage("User creation failed");
+            log.error("Error while creating/updating new user.",e);
+
+        }
+        return userResponse;
     }
 }

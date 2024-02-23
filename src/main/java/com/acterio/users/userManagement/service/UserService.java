@@ -12,6 +12,11 @@ import com.acterio.users.userManagement.dto.UserDTO;
 import com.acterio.users.userManagement.model.User;
 
 public interface UserService {
+
+    enum ActionType {
+        CREATE, UPDATE
+    }
+
     CommonResponse getUser(String userId);
 
     User getUserWithPassword(String userId);
@@ -25,5 +30,6 @@ public interface UserService {
     CommonResponse deleteUser(String username);
 
     ResponseEntity<?> login(LoginRequestDTO credentials);
-    
+
+    CommonResponse saveOrUpdateUser(CreateUserRequestDTO user, ActionType create);
 }
