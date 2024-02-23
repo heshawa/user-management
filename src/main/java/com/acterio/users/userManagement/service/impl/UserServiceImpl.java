@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CommonResponse deleteUser(String username) {
-        CommonResponse<String> response = new CommonResponse<>();
+        CommonResponse response = new CommonResponse();
         try {
             User user = userDAO.getOne(username);
             if (user != null) {
