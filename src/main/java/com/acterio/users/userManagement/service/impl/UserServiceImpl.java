@@ -137,8 +137,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public ResponseEntity<?> login(LoginRequestDTO credentials) {
+    public ResponseEntity<?> loginWithUsername(LoginRequestDTO credentials) {
         Authentication authentication;
         try{
             authentication = authenticator
@@ -158,6 +157,21 @@ public class UserServiceImpl implements UserService {
         log.info("User jwt token generated. user="+credentials.getUsername());
 
         return ResponseEntity.ok(token);
+    }
+
+    @Override
+    public ResponseEntity<?> login(LoginRequestDTO credentials) {
+        if(StringUtils.isEmpty(credentials.getUsername())){
+            List<User> users = userDAO.findUserByEmailAddress(credentials.getEmail());
+            if(CollectionUtils.isEmpty(users)){
+                log.error("User does not exist or incorrect password. username="+credentials.getUsername());
+                CommonResponse response = new CommonResponse();
+                response.setMessage("Invalid credentials");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+            credentials.setUsername(users.get(0).getUserId());
+        }
+        return loginWithUsername(credentials);
     }
 
     @Override
